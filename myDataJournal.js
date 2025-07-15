@@ -16,3 +16,83 @@ const weekData = [
 // I think Wednesday had the most screen time (I was on YouTube a lot).
 // Best focus day is probably Thursday. I remember getting a lot done.
 // I don’t think more caffeine helped my focus, maybe the opposite.
+
+// --- My Functions ---
+
+// Try to find which day had the most screen time
+function findHighestScreenTime(data) {
+  let most = data[0];
+  for (let i = 1; i < data.length; i++) {
+    if (data[i].screenTime > most.screenTime) {
+      most = data[i];
+    }
+  }
+  return most.day + " (" + most.screenTime + " hrs)";
+}
+
+// This finds the average sleep over the week
+function averageSleep(data) {
+  let total = 0;
+  for (let i = 0; i < data.length; i++) {
+    total += data[i].sleepHours;
+  }
+  let avg = total / data.length;
+  return avg.toFixed(1); // round to 1 decimal
+}
+
+// This counts moods and tells which one showed up most
+function mostFrequentMood(data) {
+  let moodCounts = {};
+
+  for (let i = 0; i < data.length; i++) {
+    let mood = data[i].mood;
+    if (moodCounts[mood]) {
+      moodCounts[mood]++;
+    } else {
+      moodCounts[mood] = 1;
+    }
+  }
+
+  let most = "";
+  let count = 0;
+  for (let mood in moodCounts) {
+    if (moodCounts[mood] > count) {
+      most = mood;
+      count = moodCounts[mood];
+    }
+  }
+
+  return '"' + most + '"';
+}
+
+// This compares caffeine to focus levels
+function correlateCaffeineToFocus(data) {
+  let lowFocus = 0;
+  let lowCount = 0;
+  let highFocus = 0;
+  let highCount = 0;
+
+  for (let i = 0; i < data.length; i++) {
+    let entry = data[i];
+    if (entry.caffeineIntake >= 2) {
+      highFocus += entry.focusLevel;
+      highCount++;
+    } else {
+      lowFocus += entry.focusLevel;
+      lowCount++;
+    }
+  }
+
+  let highAvg = (highFocus / highCount).toFixed(1);
+  let lowAvg = (lowFocus / lowCount).toFixed(1);
+
+  return "High caffeine avg: " + highAvg + ", Low caffeine avg: " + lowAvg;
+}
+
+// --- Print Results ---
+
+console.log("Analyzing My Data Journal...\n");
+console.log("Most screen time:", findHighestScreenTime(weekData));
+console.log("Average sleep:", averageSleep(weekData), "hrs");
+console.log("Most frequent mood:", mostFrequentMood(weekData));
+console.log("Does more caffeine mean better focus? →", correlateCaffeineToFocus(weekData));
